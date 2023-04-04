@@ -6,7 +6,7 @@ LATEST: Final[str] = "latest"
 EARLIEST: Final[str] = "earliest"
 
 
-@dataclass(frozen=False)  # FIXME:its better to have it true
+@dataclass(frozen=False)  # FIXME: frozen= true
 class KafkaMessage:
     topic: str
     key: str
