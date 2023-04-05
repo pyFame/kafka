@@ -5,6 +5,9 @@ from datetime import timedelta
 from . import *
 from .enums import *
 
+TIMEOUT = timedelta(minutes=10)
+TOPIC = "test"
+
 
 def delivery_report(err: str, msg: object) -> None:
     if err is not None:
@@ -26,13 +29,15 @@ def handle_consume(key: str, val: str):
         # Write the JSON-formatted data to the file
         json.dump(obj, f1)
 
+    # time.sleep(TIMEOUT)  # prevent multiple reads
+
 
 key = "name"
 val = "hiro"
 
 
 def test_publish():
-    msg = KafkaMessage("test", key, val)
+    msg = KafkaMessage(TOPIC, key, val)
 
     k = Kafka()
     prod = k.producer()
@@ -46,11 +51,11 @@ def test_publish():
 
 
 def test_consume():
-    cppt = ConsumerProperties("test", "test", EARLIEST, callback=handle_consume)
+    cppt = ConsumerProperties(TOPIC, "pytest", LATEST, callback=handle_consume)
     k = Kafka()
     consumer = k.consumer(cppt)
 
-    k.stop_consumer(timedelta(minutes=10))
+    k.stop_consumer(TIMEOUT)
 
     print("starting the consumer")
     consumer.consume()
