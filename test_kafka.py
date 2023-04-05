@@ -50,7 +50,7 @@ def test_consume():
     k = Kafka()
     consumer = k.consumer(cppt)
 
-    k.stop_consumer(timedelta(seconds=30*2))
+    k.stop_consumer(timedelta(minutes=10))
 
     print("starting the consumer")
     consumer.consume()
