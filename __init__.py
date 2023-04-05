@@ -66,18 +66,18 @@ class Kafka(kafkaUtils):
 
         return filename
 
-    def producer(self) -> Producer:
+    def producer(self) -> 'Kafka':
         producer = self.publisher or self.Publisher(self.config)
         self.publisher = producer
         return self
 
-    def consumer(self, consumer_ppt: ConsumerProperties) -> Consumer:
+    def consumer(self, consumer_ppt: ConsumerProperties) -> 'Kafka':
         consumer = self.Subscriber(self.config, consumer_ppt)
         self.subscriber = consumer
         self.consumer_ppt = consumer_ppt
         return self
 
-    def admin(self):
+    def admin(self) -> 'Kafka':
         admin_client = self.admin_client or AdminClient(self.config)
         self.admin_client = admin_client
         return self

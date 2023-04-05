@@ -51,7 +51,7 @@ def test_publish():
 
 
 def test_consume():
-    cppt = ConsumerProperties(TOPIC, "pytest", EARLIEST, callback=handle_consume)
+    cppt = ConsumerProperties(TOPIC, "pytest", LATEST, callback=handle_consume)
     k = Kafka()
     consumer = k.consumer(cppt)
 
