@@ -17,7 +17,7 @@ class Kafka(kafkaUtils):
     admin_client: AdminClient = None
     consumer_ppt: ConsumerProperties = None
 
-    def __init__(self, config_file: Optional[str] = None):
+    def __init__(self, config_file: Optional[str] = 'conf/kafka.txt'):
 
         self.config_file = config_file or self.Download_Kafka_Gist()
         self.config = self.Read_ccloud_config(self.config_file)

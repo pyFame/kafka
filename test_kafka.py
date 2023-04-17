@@ -1,11 +1,10 @@
-import json
 import time
 from datetime import timedelta
 
 from . import *
 from .enums import *
 
-TIMEOUT = timedelta(minutes=10)
+TIMEOUT = timedelta(minutes=10).total_seconds()
 TOPIC = "test"
 
 
