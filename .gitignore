@@ -3,3 +3,4 @@ venv/
 /kafka.txt
 /delivery-test.log
 /kafka_test_consume.json
+__pycache__/
