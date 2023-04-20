@@ -1,3 +1,4 @@
+import os.path
 from typing import Optional
 
 from confluent_kafka import Producer, Consumer
@@ -19,7 +20,10 @@ class Kafka(kafkaUtils):
 
     def __init__(self, config_file: Optional[str] = 'conf/kafka.txt'):
 
-        self.config_file = config_file or self.Download_Kafka_Gist()
+        if config_file is None or not os.path.exists(config_file):
+            raise ValueError("invalid config_file {config_file}")
+
+        self.config_file = config_file
         self.config = self.Read_ccloud_config(self.config_file)
 
     @staticmethod

@@ -9,9 +9,9 @@ from .enums import *
 
 TIMEOUT = timedelta(minutes=10).total_seconds()
 TOPIC = "test"
-key = "name"
-val = "hiro"
-msg = KafkaMessage(TOPIC, key, val)
+msg = KafkaMessage(TOPIC, "name", "hiro")
+
+config_file = Kafka.Download_Kafka_Gist()
 
 consumer_queue = queue.Queue(maxsize=1)
 
@@ -43,7 +43,7 @@ def handle_consume(key: str, val: str):
 
 @pytest.mark.order(1)
 def test_publish():
-    k = Kafka()
+    k = Kafka(config_file)
     prod = k.producer()
     prod.publish(msg, delivery_report)
     time.sleep(10)
@@ -56,7 +56,7 @@ def test_publish():
 @pytest.mark.order(2)
 def test_consume():
     cppt = ConsumerProperties(TOPIC, "pytest", LATEST, callback=handle_consume)
-    k = Kafka()
+    k = Kafka(config_file)
     consumer = k.consumer(cppt)
 
     k.stop_consumer(TIMEOUT)
