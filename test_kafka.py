@@ -85,12 +85,15 @@ def test_consume():
     k = Kafka(config_file)
     consumer = k.consumer(cppt)
 
-    print("starting publisher")
-    # threading.Timer(0.01, test_publish).start()
-    k.producer().publish(msg)
-
     print("starting the consumer")
-    threading.Timer(0, consumer.consume).start()
+    # threading.Timer(0, consumer.consume).start()
+    threading.Thread(target=consumer.consume, args=()).start()
+
+    print("starting publisher")
+    # publish_thread = threading.Timer(0.01, test_publish)
+    # publish_thread.start()
+    # publish_thread.join() #wait for it to join
+    k.producer().publish(msg)
 
     rcvd_msg = consumer_queue.get(timeout=TIMEOUT)  # TODO Timeout
     actual_msg = {
