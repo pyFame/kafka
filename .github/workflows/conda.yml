@@ -63,6 +63,7 @@ jobs:
 
       - name: Update environment
         run: |
+          pip install -r requirements-test.txt
           mamba env update -f environment.yml
           #if: steps.cache.outputs.cache-hit != 'true'
 
