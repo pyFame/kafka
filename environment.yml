@@ -1,0 +1,8 @@
+name: my-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+
+  - pip:
+      - -r requirements-test.txt
