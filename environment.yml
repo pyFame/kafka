@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - pytest
 
   - pip:
       - -r requirements-test.txt
