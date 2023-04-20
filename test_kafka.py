@@ -10,7 +10,7 @@ from confluent_kafka import KafkaError
 from . import *
 from .enums import *
 
-TIMEOUT = timedelta(minutes=10).total_seconds()
+TIMEOUT = timedelta(minutes=1).total_seconds()
 TOPIC = "test"
 msg = KafkaMessage(TOPIC, "name", "hiro")
 
@@ -67,7 +67,6 @@ def handle_consume(key: str, val: str):
     # FIXME time.sleep(TIMEOUT)  # prevent multiple reads
 
 
-@pytest.mark.order(2)
 def test_publish():
     k = Kafka(config_file)
     prod = k.producer()
@@ -81,16 +80,19 @@ def test_publish():
     os.remove(delivery_log)
 
 
-@pytest.mark.order(1)
 def test_consume():
-    cppt = ConsumerProperties(TOPIC, "pytest", EARLIEST, callback=handle_consume)
+    cppt = ConsumerProperties(TOPIC, "pytest", LATEST, callback=handle_consume)
     k = Kafka(config_file)
     consumer = k.consumer(cppt)
 
-    print("starting the consumer")
-    threading.Timer(0.1, consumer.consume)
+    print("starting publisher")
+    # threading.Timer(0.01, test_publish).start()
+    k.producer().publish(msg)
 
-    rcvd_msg = consumer_queue.get()  # TODO Timeout
+    print("starting the consumer")
+    threading.Timer(0, consumer.consume).start()
+
+    rcvd_msg = consumer_queue.get(timeout=TIMEOUT)  # TODO Timeout
     actual_msg = {
         "key": msg.key,
         "val": msg.val
