@@ -1,7 +1,9 @@
 import os
 import queue
+import random
 import threading
 import time
+import uuid
 from datetime import timedelta
 
 import pytest
@@ -16,8 +18,10 @@ msg = KafkaMessage(TOPIC, "name", "hiro")
 
 config_file = Kafka.Download_Kafka_Gist()
 
-json_consume = 'kafka_test_consume.json'
-delivery_log = "delivery_test.log"
+uid = str(uuid.uuid4())
+
+json_consume = f'{uid}kafka_test_consume.json'
+delivery_log = f"{uid}delivery_test.log"
 
 consumer_queue = queue.Queue(maxsize=1)
 delivery_queue = queue.Queue(maxsize=1)
@@ -115,3 +119,14 @@ def test_consume():
     k.stop_consumer(timedelta())
 
     os.remove(json_consume)
+
+
+@pytest.fixture(scope='session', autouse=True)
+def cleanup():
+    temp_files = [json_consume, delivery_log]
+    # Perform cleanup tasks before running tests
+    yield
+    # Perform cleanup tasks after running tests
+    for temp_file in temp_files:
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
