@@ -4,6 +4,7 @@ channels:
   - defaults
 dependencies:
   - pytest
+  - pip
 
   - pip:
       - -r requirements-test.txt
