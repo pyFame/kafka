@@ -1,6 +1,6 @@
 # kafka-client
 
-[![Github](https://github.com/pythoneerHiro/kafka/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/pythoneerHiro/kafka/actions/workflows/python-package.yml)
+[![Github](https://github.com/pythoneerHiro/kafka/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/pythoneerHiro/kafka/actions/workflows/python-package.yml?branch=main)
 
 ## Idea and Inspiration
 
