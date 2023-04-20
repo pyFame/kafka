@@ -4,3 +4,4 @@ venv/
 /delivery-test.log
 /kafka_test_consume.json
 __pycache__/
+*.log

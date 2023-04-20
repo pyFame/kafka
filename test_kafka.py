@@ -1,3 +1,4 @@
+import os
 import queue
 import threading
 import time
@@ -14,6 +15,9 @@ TOPIC = "test"
 msg = KafkaMessage(TOPIC, "name", "hiro")
 
 config_file = Kafka.Download_Kafka_Gist()
+
+json_consume = 'kafka_test_consume.json'
+delivery_log = "delivery_test.log"
 
 consumer_queue = queue.Queue(maxsize=1)
 delivery_queue = queue.Queue(maxsize=1)
@@ -35,14 +39,14 @@ def delivery_report(err: str, msg: object) -> None:
         else:
             print(err_msg)
 
-        with open("delivery-test.log", "w") as f1:
+        with open(delivery_log, "w") as f1:
             f1.write(err_msg)
     else:
         report = {
             "topic": msg.topic(),
             "partition": msg.partition(),
         }
-        with open("delivery-test.log", "w") as f1:
+        with open(delivery_log, "w") as f1:
             f1.write("msg sent")
 
     delivery_queue.put(report, block=False, timeout=0)
@@ -50,34 +54,36 @@ def delivery_report(err: str, msg: object) -> None:
 
 def handle_consume(key: str, val: str):
     # msg = KafkaMessage(TOPIC, key, val)
-    obj = {
+    rcvd_msg = {
         "key": key,
         "val": val
     }
-    consumer_queue.put(msg, block=False)
+    consumer_queue.put(rcvd_msg, block=False)
 
-    with open('kafka_test_consume.json', 'w') as f1:
+    with open(json_consume, 'w') as f1:
         # Write the JSON-formatted data to the file
-        json.dump(obj, f1)
+        json.dump(rcvd_msg, f1)
 
     # FIXME time.sleep(TIMEOUT)  # prevent multiple reads
 
 
-@pytest.mark.order(1)
+@pytest.mark.order(2)
 def test_publish():
     k = Kafka(config_file)
     prod = k.producer()
     prod.publish(msg, delivery_report)
     time.sleep(10)
 
-    with open("delivery-test.log", "r") as f1:
+    with open(delivery_log, "r") as f1:
         line = f1.readline().strip()
         assert line.strip() == "msg sent"
 
+    os.remove(delivery_log)
 
-@pytest.mark.order(2)
+
+@pytest.mark.order(1)
 def test_consume():
-    cppt = ConsumerProperties(TOPIC, "pytest", LATEST, callback=handle_consume)
+    cppt = ConsumerProperties(TOPIC, "pytest", EARLIEST, callback=handle_consume)
     k = Kafka(config_file)
     consumer = k.consumer(cppt)
 
@@ -102,3 +108,5 @@ def test_consume():
 
     print("stopping the consumer")
     k.stop_consumer(timedelta())
+
+    os.remove(json_consume)
