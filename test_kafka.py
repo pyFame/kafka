@@ -9,7 +9,7 @@ from datetime import timedelta
 import pytest
 from confluent_kafka import KafkaError
 
-from thread import keepAlive
+from .thread import keepAlive
 from . import *
 from .enums import *
 
