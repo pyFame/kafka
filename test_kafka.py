@@ -9,6 +9,7 @@ from datetime import timedelta
 import pytest
 from confluent_kafka import KafkaError
 
+from thread import keepAlive
 from . import *
 from .enums import *
 
@@ -68,7 +69,17 @@ def handle_consume(key: str, val: str):
         # Write the JSON-formatted data to the file
         json.dump(rcvd_msg, f1)
 
+    # raise Exception("got what was req")
     # FIXME time.sleep(TIMEOUT)  # prevent multiple reads
+
+
+# @keepAlive
+# def keep_publishing(msg: KafkaMessage):
+#     k = Kafka(config_file)
+#     producer = k.producer()
+#
+#     while True:
+#         producer.publish()
 
 
 def test_publish():
@@ -85,7 +96,9 @@ def test_publish():
 
 
 def test_consume():
-    cppt = ConsumerProperties(TOPIC, "pytest", LATEST, callback=handle_consume)
+    # random.seed()#TODO
+    cgid = f"pytest-{random.randint(0, 99999)}"
+    cppt = ConsumerProperties(TOPIC, cgid, LATEST, callback=handle_consume)
     k = Kafka(config_file)
     consumer = k.consumer(cppt)
 
@@ -97,6 +110,7 @@ def test_consume():
     # publish_thread = threading.Timer(0.01, test_publish)
     # publish_thread.start()
     # publish_thread.join() #wait for it to join
+    k.producer().publish(msg)
     k.producer().publish(msg)
 
     rcvd_msg = consumer_queue.get(timeout=TIMEOUT)  # TODO Timeout
