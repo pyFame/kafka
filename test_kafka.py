@@ -59,27 +59,35 @@ def delivery_report(err: str, msg: object) -> None:
 
 def handle_consume(key: str, val: str):
     # msg = KafkaMessage(TOPIC, key, val)
+    if consumer_queue.full():
+        print("warning consumer queue full")
+        time.sleep(TIMEOUT)
+        return
+
     rcvd_msg = {
         "key": key,
         "val": val
     }
-    consumer_queue.put(rcvd_msg, block=False)
 
     with open(json_consume, 'w') as f1:
         # Write the JSON-formatted data to the file
         json.dump(rcvd_msg, f1)
 
+    consumer_queue.put(rcvd_msg, block=False)
+
     # raise Exception("got what was req")
     # FIXME time.sleep(TIMEOUT)  # prevent multiple reads
 
 
-# @keepAlive
-# def keep_publishing(msg: KafkaMessage):
-#     k = Kafka(config_file)
-#     producer = k.producer()
-#
-#     while True:
-#         producer.publish()
+@keepAlive
+def keep_publishing(msg: KafkaMessage):
+    k = Kafka(config_file)
+    producer = k.producer()
+
+    while True:
+        producer.publish(msg)
+        print(f"published {msg}")
+        time.sleep(1)
 
 
 def test_publish():
@@ -91,8 +99,6 @@ def test_publish():
     with open(delivery_log, "r") as f1:
         line = f1.readline().strip()
         assert line.strip() == "msg sent"
-
-    os.remove(delivery_log)
 
 
 def test_consume():
@@ -110,8 +116,8 @@ def test_consume():
     # publish_thread = threading.Timer(0.01, test_publish)
     # publish_thread.start()
     # publish_thread.join() #wait for it to join
-    k.producer().publish(msg)
-    k.producer().publish(msg)
+    keep_publishing(msg)
+    k.producer().publish(msg)  # FIXME remove
 
     rcvd_msg = consumer_queue.get(timeout=TIMEOUT)  # TODO Timeout
     actual_msg = {
@@ -121,7 +127,7 @@ def test_consume():
 
     assert rcvd_msg == actual_msg
 
-    with open('kafka_test_consume.json', 'r') as f:
+    with open(json_consume, 'r') as f:
         kafka_msg = json.load(f)
         consumer_key = kafka_msg["key"]
         consumer_val = kafka_msg["val"]
@@ -132,15 +138,14 @@ def test_consume():
     print("stopping the consumer")
     k.stop_consumer(timedelta())
 
-    os.remove(json_consume)
-
 
 @pytest.fixture(scope='session', autouse=True)
 def cleanup():
+    print("cleanup activated")
     temp_files = [json_consume, delivery_log]
-    # Perform cleanup tasks before running tests
+    print("Performing cleanup tasks before running tests")
     yield
-    # Perform cleanup tasks after running tests
+    print("Performing cleanup tasks after running tests")
     for temp_file in temp_files:
         if os.path.exists(temp_file):
             os.remove(temp_file)
