@@ -1,7 +1,10 @@
 venv/
 .idea/
-/kafka.txt
-/delivery-test.log
-/kafka_test_consume.json
-__pycache__/
 *.log
+
+__pycache__/
+.DS_Store
+
+*kafka_test_consume.json
+*delivery_test.log
+kafka.txt
