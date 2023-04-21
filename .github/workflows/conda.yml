@@ -13,15 +13,14 @@ on:
     - cron: '0 */10 * * *'
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}-conda
+  group: conda #${{ github.head_ref || github.run_id }}-conda
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    concurrency: 8
     strategy:
-      max-parallel: 5
+      max-parallel: 10
       fail-fast: true
       matrix:
         arch: [ x64, arm, arm64 ]
