@@ -8,3 +8,4 @@ __pycache__/
 *kafka_test_consume.json
 *delivery_test.log
 kafka.txt
+pytest_cache/
