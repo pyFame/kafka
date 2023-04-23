@@ -31,7 +31,7 @@ jobs:
         os: [ ubuntu-latest,macos-latest,windows-latest ]
 
     env:
-      CGID: python_package-${{runner.os}}-${{matrix.arch}}
+      CGID: python_package-${{matrix.os}}-${{matrix.arch}}
 
 
     steps:

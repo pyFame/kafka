@@ -39,7 +39,7 @@ jobs:
             prefix: C:\Miniconda3\envs\my-env
 
     env:
-      CGID: conda-${{runner.os}}-${{matrix.arch}}
+      CGID: conda-${{matrix.os}}-${{matrix.arch}}
 
     steps:
       - uses: actions/checkout@v3
