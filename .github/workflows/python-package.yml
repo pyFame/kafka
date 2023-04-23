@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
   schedule:
-    - cron: '0 */5 * * *'
+    - cron: '*/20 * * * *'
 
 concurrency:
   group: python-package #${{ github.run_id || github.head_ref }}-python #${{ github.ref }}
