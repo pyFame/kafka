@@ -24,8 +24,8 @@ uid = str(uuid.uuid4())
 json_consume = f'{uid}kafka_test_consume.json'
 delivery_log = f"{uid}delivery_test.log"
 
-consumer_queue = queue.Queue(maxsize=1)
-delivery_queue = queue.Queue(maxsize=1)
+consumer_queue = queue.Queue(maxsize=2)
+delivery_queue = queue.Queue(maxsize=2)
 
 cgid = os.getenv("CGID","test_kafka.py")
 
@@ -63,8 +63,6 @@ def handle_consume(key: str, val: str):
     # msg = KafkaMessage(TOPIC, key, val)
     if consumer_queue.full():
         print("warning consumer queue full")
-        time.sleep(TIMEOUT)
-        return
 
     rcvd_msg = {
         "key": key,
