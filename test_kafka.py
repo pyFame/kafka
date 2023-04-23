@@ -63,16 +63,18 @@ def handle_consume(key: str, val: str):
     # msg = KafkaMessage(TOPIC, key, val)
     if consumer_queue.full():
         print("warning consumer queue full")
-        return
 
     rcvd_msg = {
         "key": key,
         "val": val
     }
 
-    with open(json_consume, 'w') as f1:
-        # Write the JSON-formatted data to the file
-        json.dump(rcvd_msg, f1)
+
+
+    if not os.path.exists(json_consume):
+        with open(json_consume, 'w') as f1:
+            # Write the JSON-formatted data to the file
+            json.dump(rcvd_msg, f1)
 
     consumer_queue.put(rcvd_msg, block=False)
 
@@ -142,9 +144,11 @@ def test_consume():
 
 @pytest.fixture(scope='session', autouse=True)
 def cleanup():
-    print("cleanup activated")
     temp_files = [json_consume, delivery_log]
     print("Performing cleanup tasks before running tests")
+    for temp_file in temp_files:
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
     yield
     print("Performing cleanup tasks after running tests")
     for temp_file in temp_files:
