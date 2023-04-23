@@ -1,6 +1,5 @@
 import os
 import queue
-import random
 import threading
 import time
 import uuid
@@ -9,9 +8,9 @@ from datetime import timedelta
 import pytest
 from confluent_kafka import KafkaError
 
-from .thread import keepAlive
 from . import *
 from .enums import *
+from .thread import keepAlive
 
 TIMEOUT = timedelta(minutes=1).total_seconds()
 TOPIC = "test"
@@ -27,7 +26,16 @@ delivery_log = f"{uid}delivery_test.log"
 consumer_queue = queue.Queue(maxsize=1)
 delivery_queue = queue.Queue(maxsize=1)
 
-cgid = os.getenv("CGID","test_kafka.py")
+cgid = os.getenv("CGID", "test_kafka.py")
+
+
+@pytest.mark.first
+def test_create_topic():
+    k = Kafka(config_file)
+    admin = k.admin()
+    topics = [TOPIC]
+
+    admin.create_topics(topics)
 
 
 def delivery_report(err: str, msg: object) -> None:
@@ -69,8 +77,6 @@ def handle_consume(key: str, val: str):
         "val": val
     }
 
-
-
     if not os.path.exists(json_consume):
         with open(json_consume, 'w') as f1:
             # Write the JSON-formatted data to the file
@@ -106,7 +112,7 @@ def test_publish():
 
 def test_consume():
     # random.seed()#TODO
-    #cgid = f"pytest-{random.randint(0, 99999)}"
+    # cgid = f"pytest-{random.randint(0, 99999)}"
     cppt = ConsumerProperties(TOPIC, cgid, LATEST, callback=handle_consume)
     k = Kafka(config_file)
     consumer = k.consumer(cppt)

@@ -26,15 +26,26 @@ def delivery_report(err: str, msg: object) -> None:
 class kafkaUtils():
     context: bool = True
 
-    def create_topics(self, topics: List[str]):  # todo add more sophistications later
+    def create_topics(self, topics: List[Union[str, Topic]]):  # todo add more sophistications later
         from confluent_kafka.admin import NewTopic
 
         admin_client = self.admin_client or self.admin().admin_client
         num_partition = 6
         replication_factor = 3  # minimum
 
-        new_topics = [NewTopic(topic, num_partitions=num_partition, replication_factor=replication_factor) for topic in
-                      topics]
+        # Check the type of the first element in the topics list to determine how to create new topics
+
+        new_topics: List[NewTopic] = []
+        for topic in topics:
+            new_topic: Topic
+            if isinstance(topic, str):
+                new_topic = Topic(topic)
+            elif isinstance(topic, Topic):
+                new_topic = topic
+            else:
+                raise TypeError("Unsupported topic type")
+            new_topics.append(NewTopic(**new_topic.dict))
+
         futures = admin_client.create_topics(new_topics)
         for topic, future in futures.items():
             try:

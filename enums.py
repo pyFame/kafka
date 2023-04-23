@@ -1,3 +1,4 @@
+import dataclasses
 import json
 import logging as log
 from dataclasses import dataclass
@@ -35,10 +36,21 @@ class KafkaMessage:
 
 
 @dataclass
-class ConsumerProperties():
+class ConsumerProperties:
     topic: str
     cgid: str = "kafka.py"  # ConsumerGroup id
     resume_at: Union[LATEST, EARLIEST] = LATEST  # in case of resuming from downtime latest by default
 
     callback: Callable[[str, str], None] = log.info
     poll_timeout: float = 1.0  # timeout
+
+
+@dataclass(frozen=True)
+class Topic:
+    topic: str
+    num_partitions: int = 6
+    replication_factor: int = 3
+
+    @property
+    def dict(self) -> dict:
+        return dataclasses.asdict(self)
