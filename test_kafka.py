@@ -27,6 +27,8 @@ delivery_log = f"{uid}delivery_test.log"
 consumer_queue = queue.Queue(maxsize=1)
 delivery_queue = queue.Queue(maxsize=1)
 
+cgid = os.getenv("CGID","test_kafka.py")
+
 
 def delivery_report(err: str, msg: object) -> None:
     report = {}
@@ -103,7 +105,7 @@ def test_publish():
 
 def test_consume():
     # random.seed()#TODO
-    cgid = f"pytest-{random.randint(0, 99999)}"
+    #cgid = f"pytest-{random.randint(0, 99999)}"
     cppt = ConsumerProperties(TOPIC, cgid, LATEST, callback=handle_consume)
     k = Kafka(config_file)
     consumer = k.consumer(cppt)

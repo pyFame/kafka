@@ -38,6 +38,9 @@ jobs:
             label: win-64
             prefix: C:\Miniconda3\envs\my-env
 
+    env:
+      CGID: conda-${{runner.os}}-${{matrix.arch}}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -79,7 +82,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .pytest_cache
-          key: conda-${{ runner.os }}-${{matrix.python-version}}-${{hashFiles('test_*.py')}}.pytest_cache
+          key: conda-${{matrix.arch}}-${{ runner.os }}-${{matrix.python-version}}-${{hashFiles('test_*.py')}}.pytest_cache
+
 
       - name: Test with pytest cached
         continue-on-error: true

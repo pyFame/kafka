@@ -30,6 +30,9 @@ jobs:
         arch: [ x64, arm, arm64 ]
         os: [ ubuntu-latest,macos-latest,windows-latest ]
 
+    env:
+      CGID: python_package-${{runner.os}}-${{matrix.arch}}
+
 
     steps:
       - uses: actions/checkout@v3
@@ -57,7 +60,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .pytest_cache
-          key: ${{ runner.os }}-${{matrix.python-version}}-${{hashFiles('test_*.py')}}.pytest_cache
+          key: python-package-${{ runner.os }}-${{matrix.python-version}}-${{hashFiles('test_*.py')}}.pytest_cache
 
       - name: Test with pytest cached
         continue-on-error: true
