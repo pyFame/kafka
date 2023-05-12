@@ -10,7 +10,9 @@ on:
     branches: [ "main" ]
 
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 * */1 * *'
+
+  workflow_dispatch:
 
 concurrency:
   group: python-package #${{ github.run_id || github.head_ref }}-python #${{ github.ref }}
