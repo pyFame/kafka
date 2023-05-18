@@ -9,6 +9,7 @@ from .utils import kafkaUtils
 
 
 class Kafka(kafkaUtils):
+    __slots__ = "publisher,subscriber,admin_client,consumer_ppt"  # FIXME use __dict__ if another attribute is added dynamically
     """
   utils functions like produce/publish are in kafkaUtils i.e kafka_utils.py
   """
