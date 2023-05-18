@@ -10,7 +10,7 @@ EARLIEST: Final[str] = "earliest"
 valid_kafka_json = [str, int, float]
 
 
-@dataclass(frozen=False)  # FIXME: frozen= true
+@dataclass(slots=True, frozen=False)  # FIXME: frozen= true
 class KafkaMessage:
     topic: str
     key: Union[str, int, float]
@@ -35,7 +35,7 @@ class KafkaMessage:
         return value
 
 
-@dataclass
+@dataclass(slots=True)
 class ConsumerProperties:
     topic: str
     cgid: str = "kafka.py"  # ConsumerGroup id
@@ -45,7 +45,7 @@ class ConsumerProperties:
     poll_timeout: float = 1.0  # timeout
 
 
-@dataclass(frozen=True)
+@dataclass(slots=True, frozen=True)
 class Topic:
     topic: str
     num_partitions: int = 6
