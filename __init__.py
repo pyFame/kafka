@@ -9,15 +9,16 @@ from .utils import kafkaUtils
 
 
 class Kafka(kafkaUtils):
-    __slots__ = "publisher,subscriber,admin_client,consumer_ppt"  # FIXME use __dict__ if another attribute is added dynamically
+    __slots__ = ('publisher', 'subscriber', 'admin_client',
+                 'consumer_ppt')
     """
   utils functions like produce/publish are in kafkaUtils i.e kafka_utils.py
   """
 
-    publisher: Producer = None
-    subscriber: Consumer = None
-    admin_client: AdminClient = None
-    consumer_ppt: ConsumerProperties = None
+    publisher: Producer
+    subscriber: Consumer
+    admin_client: AdminClient
+    consumer_ppt: ConsumerProperties
 
     def __init__(self, config_file: Optional[str] = 'conf/kafka.txt'):
 
@@ -26,6 +27,11 @@ class Kafka(kafkaUtils):
 
         self.config_file = config_file
         self.config = self.Read_ccloud_config(self.config_file)
+
+        self.publisher = None
+        self.subscriber = None
+        self.admin_client = None
+        self.consumer_ppt = None
 
     @staticmethod
     def Publisher(config: dict) -> Producer:
