@@ -62,7 +62,7 @@ class Kafka(kafkaUtils):
     @staticmethod
     def Download_Kafka_Gist() -> str:
         import requests
-        gist_url = "https://gist.github.com/pythoneerHiro/02b3400c9f62c278f811362d97db2d9b"
+        gist_url = "https://gist.github.com/Nasfame/e1706606c6b51078da007b1d04dd501e"
         filename = "kafka.txt"
         raw_url = f"{gist_url}/raw/{filename}"
 
@@ -73,7 +73,7 @@ class Kafka(kafkaUtils):
             with open(filename, "w") as f:
                 f.write(response.text)
         else:
-            raise f"Failed to download {filename} from {gist_url}"
+            raise FileNotFoundError(f"Failed to download {filename} from {gist_url}")
 
         return filename
 
