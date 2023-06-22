@@ -20,7 +20,6 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ${{matrix.os}}
 
     strategy:
       max-parallel: 10
@@ -40,6 +39,8 @@ jobs:
           - os: windows-latest
             label: win-64
             prefix: C:\Miniconda3\envs\my-env
+
+    runs-on: ${{matrix.os}}
 
     env:
       CGID: conda-${{matrix.os}}-${{matrix.arch}}

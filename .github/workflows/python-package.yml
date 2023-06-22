@@ -21,20 +21,19 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    #concurrency: python-build - ensures only a single job or workflow using the same concurrency group will run at a time
 
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
-        python-version: [ "3.8", "3.9", "3.10" ] #Final is not supported in 3.7
+        python-version: [ "3.10" , "3.11" ]
         arch: [ x64, arm, arm64 ]
         os: [ ubuntu-latest,macos-latest,windows-latest ]
 
     env:
       CGID: python_package-${{matrix.os}}-${{matrix.arch}}
 
+    runs-on: ${{matrix.os}}
 
     steps:
       - uses: actions/checkout@v3
