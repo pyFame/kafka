@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: python-package #${{ github.run_id || github.head_ref }}-python #${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 
